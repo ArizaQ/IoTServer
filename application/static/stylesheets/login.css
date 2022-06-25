@@ -1,0 +1,133 @@
+body{
+    background-size: 100% 100%;
+    background: url("../images/Safari-Background_Emoji_Safari-Animals.699.png");
+}
+.logo {
+    /*background: url("../images/logo.png") no-repeat;*/
+    position: fixed;
+    width: 304px;
+    height: 80px;
+    top: 36px;
+    left: 45px;
+    background-size: 100% 100%;
+}
+
+.login_part {
+    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+    text-align: center;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 500px;
+    padding-bottom: 300px;
+}
+.login_part  h2 {
+    font-family:Arial,Helvetica,sans-serif;
+    font-size: 22px;
+    line-height: 18px;
+    padding-top: 40px;
+    padding-bottom: 18px;
+}
+.input {
+    max-width: 300px;
+    margin: 0 auto;
+}
+.username_input {
+    border: 1px solid #c4c6ca;
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 15px;
+    background: #f9f8f6;
+    outline: none;
+}
+.password{
+    border: 1px solid #c4c6ca;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-radius: 8px;
+    margin-top: 10px;
+    background: #f9f8f6;
+}
+.password_input{
+    border: none;
+    outline: none;
+
+    float: left;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.password_prompt,.email_prompt,.nickname_prompt,.auth_prompt{
+    color: crimson;
+}
+.login_button {
+    width: 60%;
+    display: inline-block;
+    background: #94bef5;
+    margin-top: 5px;
+    color: #fff;
+    font-size: 18px;
+    line-height: 50px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.login_info #privacy_policy_link,#privacy_policy_link {
+    color: #56abee;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+.register{
+    color: #56abee;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+.login_third_party{
+    margin-top: 5px;
+}
+.weixin_login{
+    font-size: 16px;
+    line-height: 44px;
+    border: 2px solid #c4c6ca;
+    background: #04BE02;
+    display: inline-block;
+    border-radius: 9px;
+    color: #404040;
+    cursor: pointer;
+    padding: 0 20px;
+}
+.apple_login{
+    font-size: 16px;
+    line-height: 44px;
+    background: #c4c6ca;
+    border: 2px solid #c4c6ca;
+    display: inline-block;
+    border-radius: 9px;
+    color: grey;
+    cursor: pointer;
+    padding: 0 20px;
+}
+
+
+
+/*注册部分*/
+.register_password{
+    border: 1px solid #c4c6ca;
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 10px;
+    background: #ffffff;
+    max-width: 300px;
+}
+.register_see_password {
+    width: 28px;
+    height: 23px;
+    margin-right: 0px;
+    display: inline-block;
+    background-size: cover;
+}
+.auth_code,.forget_password{
+    color: #000000;
+    cursor: pointer;
+}
+.auth_code:hover{
+    color: #1647aa;
+}

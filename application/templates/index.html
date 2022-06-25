@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>主页</title>
+    <link href="../static/stylesheets/index.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div class="wrapper">
+    <header>
+        <h1 id="title">MaskMan</h1>
+        <nav>
+            <ul>
+                <li><a href="/login">管理员</a></li>
+                <li><a class="current" href="">主页</a></li>
+                <li><a href="">关于我们</a></li>
+                {#						<li><a href="">我的转发</a></li>#}
+                {#						<li><a href="">我的收藏</a></li>#}
+                <li class="search_form">
+                    <form action="" class="search_bar" method="get">
+                        <input class="search" name="key" placeholder="搜索图片，作者，类型" type="text">
+                        <div class="icon_submit"></div>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class="control" id="control">
+        <div class="big_image">
+            <img id="main_pic" src="https://iot-data-zwq.obs.cn-north-4.myhuaweicloud.com/user-data/2022-06-25%2017%3A23%3A44.jpg" alt="照片"/>
+        </div>
+        <aside class="aside">
+            <h2 id="mask_prompt" >Welcome</h2>
+            <h2 id="no_mask_prompt" ></h2>
+            <div class="take_photo" id="take_photo">
+                <a class="take_photo_a" href="">
+                    <span>点击拍照</span>
+                </a>
+            </div>
+            <input type="checkbox" name="if_stay_local" id="if_stay_local" >若您不希望照片被上传云端，请在拍照前勾选</input>
+            <form id="feedback_form" class="argue">
+                <div>对结果有异议？</div>
+                <select name="feedback" id="feedback">
+                    <option value="1">我实际上戴好了口罩</option>
+                    <option value="0">我实际上没有戴口罩</option>
+                    <option value="2">我实际上佩戴不规范</option>
+                </select>
+                <div  id="feedback_submit" > 提交反馈</div>
+            </form>
+{#            <div class="share_photo" id="share_photo">#}
+{#                <a class="share_photo_a" href="">#}
+{#                    <span>愿意与我们分享照片吗？</span>#}
+{#                </a>#}
+{#            </div>#}
+        </aside>
+        <div style="clear:both;"></div>
+    </div>
+    <section class="images" id="images">
+        <footer>
+            &copy; 2021 Cirilla Inc.
+        </footer>
+    </section>
+</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="../static/javascripts/jquery-1.11.0.min.js"></script>
+<script src="../static/javascripts/index.js"></script>
+</html>
