@@ -24,7 +24,9 @@ subject:
             male
             female
             others
-            
+    model:
+        tag:
+            model-info
     fusion:
 
 '''

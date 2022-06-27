@@ -48,35 +48,29 @@ window.onload = function () {
     });
 
     var socket2 = io("http://localhost:8080");
+    console.log("prepared to connect to cloud.")
     socket2.on('connect', function () {
         socket.emit('my_event', {data: 'I\'m connected222!'});
-        console.log("connected22")
+        console.log("connected22222222222")
     });
     socket2.on('model_transmit', function (msg, cb) {
         // $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
         console.log("model_transmit")
-        socket.emit("model_transmit",msg)
+        socket.emit("model_transmit", msg)
         console.log(msg)
-    //     $.ajax({
-    //     type: "POST",
-    //     url: 'http://localhost:5000/picUpload/modelTransmit',
-    //     contentType: "application/json",
-    //     data: msg,
-    //     dataType: "json",
-    //     success: function (data) {
-    //         console.log("模型下发成功")
-    //     },
-    //     error: (err) => {
-    //         console.log("模型下发失败")
-    //     }
-    // });
     });
+    socket2.on('my_response', function (msg, cb) {
+        consle.log("my_response")
+        console.log(msg)
+    });
+    
+
 }
 
 function takePhoto(e) {
     e.preventDefault();
-    ifStayLocal=$("#if_stay_local").get(0).checked
-    var url = "/picUpload/takePhoto?ifStayLocal="+ifStayLocal;
+    ifStayLocal = $("#if_stay_local").get(0).checked
+    var url = "/picUpload/takePhoto?ifStayLocal=" + ifStayLocal;
     $.ajax({
         type: "get",
         url: url,
@@ -84,7 +78,7 @@ function takePhoto(e) {
             printPrompt(data, "common")
             setTimeout(function () {
 
-                printPrompt("Welcome","common")
+                printPrompt("Welcome", "common")
 
             }, 1500)
         }
@@ -159,12 +153,12 @@ function addImage(pic) {
 
     var imageHref = document.createElement("a");
 
-    var itemInfo = document.createElement("text")
+    var itemInfo = document.createElement("div")
     itemInfo.innerText = pic.timeNow
     item.appendChild(itemInfo)
 
 
-    $("#images").append(item);
+    $("#images").prepend(item);
     images.push(item);
 
 

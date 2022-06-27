@@ -5,11 +5,12 @@ import pymysql
 import random
 from application.settings.dev import DevelopmentConfig
 from application.settings.prop import  ProductionConfig
-from paho.mqtt import client as mqtt_client
+# from paho.mqtt import client as mqtt_client
 from threading import Lock
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 from flask_cors import CORS
+from application.apps.utils import constVal
 # 加载配置
 config= {
     'dev': DevelopmentConfig,
@@ -42,7 +43,6 @@ topicTest='test'
 mqtt_ws = Mqtt(app)
 mqtt_ws.subscribe(topic)
 mqtt_ws.subscribe(topicTest)
-
 
 from .apps.picUpload.views import picUploadBlueprint
 app.register_blueprint(picUploadBlueprint, url_prefix='/picUpload')

@@ -8,7 +8,7 @@ from application.apps.utils.OBSService import uploadFile, downloadFile
 import datetime
 import requests
 import urllib
-
+import json
 picUploadBlueprint = Blueprint('picUpload', __name__, template_folder='../../templates', static_folder='../../static')
 current_user = None
 current_stay_local = False
@@ -28,7 +28,7 @@ def handle_mqtt_message(client, userdata, message):
         pictureUrl = uploadFile(filePathPrefix, tempFileName, "mask-data", "mask")
         create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         user = insertUserInfo(pictureUrl, isMasked, create_time)
-
+        global current_user
         current_user = user
         current_user["argue"] = -1
         current_stay_local = False
@@ -43,10 +43,9 @@ def handle_mqtt_message(client, userdata, message):
             payload=message.payload.decode()
         )
         print('Received message on topic: {topic} with payload: {payload}'.format(**data))
-
-
 @picUploadBlueprint.route('/takePhoto', methods=['GET'])
 def takePhoto():
+    global current_user
     if current_user is not None:
         sendUserInfoToCloud(current_user)
 
@@ -66,14 +65,15 @@ def sendUserInfoToCloud(user):
     if current_stay_local:
         return
     url = constVal.cloudBack + "/uploadPicture"
-    payload = user
-    result = requests.post(url, data=payload)
+    payload = json.dumps(user)
+    result = requests.post(url, json=payload)
     print(result.status_code)
     print(result.content)
 
 
 @picUploadBlueprint.route('/feedback', methods=['POST'])
 def feedback():
+    global current_user
     feedbackContent = request.get_json()['feedback']
     if current_user is None:
         return "请先拍照！"
@@ -90,7 +90,12 @@ def model_transmit(message):
     print(message)
     print("模型获取成功")
 
-
+@picUploadBlueprint.route('/modelTransmit', methods=['POST'])
+def model_transmit2():
+    model_url=request.get_json()
+    urllib.request.urlretrieve(model_url, constVal.modelPath)
+    print(request.get_json())
+    print("模型获取成功")
 @picUploadBlueprint.route('/publishToPicUpload', methods=['POST'])
 def publish_message():
     # pass

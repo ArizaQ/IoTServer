@@ -1,10 +1,10 @@
 from flask import Flask, render_template, session, request, \
     copy_current_request_context,jsonify,Blueprint
-import aiohttp
-import random
-from aiohttp import web
-from aiohttp.client_ws import ClientWebSocketResponse
-import asyncio
+# import aiohttp
+# import random
+# from aiohttp import web
+# from aiohttp.client_ws import ClientWebSocketResponse
+# import asyncio
 indexBlue=Blueprint('index', __name__, template_folder='../../templates', static_folder='../../static')
 from application.apps.index.model import getPictureTest,getAllUserInfo
 from websocket import create_connection

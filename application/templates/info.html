@@ -1,12 +1,72 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerneMQ测试</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
 </head>
 <body>
-<h1>
-    赵宇舟 崔晟 蒲中正 彭大海 武宇杰
-</h1>
+    <script>
+	// Create a client instance
+	//Howard 2021-03-14 备注：对应于VerneMQ的配置/etc/vernemq/vernemq.conf里面一项listener.ws.default=0.0.0.0:9001
+	client = new Paho.MQTT.Client("broker.emqx.io", 1883, "","clientsssssssId");
+
+
+	// set callback handlers
+	client.onConnectionLost = onConnectionLost;
+	client.onMessageArrived = onMessageArrived;
+	console.log("connecting----");
+	// connect the client
+	client.connect({onSuccess:onConnect});
+
+
+
+	function onSuccessCallback(){
+		console.log("onSuccessCallback");
+	}
+	function onFailureCallback(){
+		console.log("onFailureCallback");
+	}
+
+	// called when the client connects
+	function onConnect() {
+	  // Once a connection has been made, make a subscription and send a message.
+	  //示范1：
+	  console.log("onConnect----");
+	  client.subscribe("World1");
+	  client.subscribe("World2");
+	  message = new Paho.MQTT.Message("Hello1");
+	  message.destinationName = "World1";
+	  client.send(message);
+	  //示范2：延迟5秒执行
+	  setTimeout(function(){
+		  message1 = new Paho.MQTT.Message("Hello2");
+		  message1.destinationName = "World2";
+		  client.send(message1);
+		  }, 5000);
+
+		//示范3：Howard 2021-03-23 这种操作可以获取订阅成功失败结果
+		var subscribeOptions = {
+			qos: 0,  // QoS
+			invocationContext: {foo: true},  // Passed to success / failure callback
+			onSuccess: onSuccessCallback,
+			onFailure: onFailureCallback,
+			timeout: 10
+		};
+		client.subscribe("topic", subscribeOptions);
+	}
+
+	// called when the client loses its connection
+	function onConnectionLost(responseObject) {
+	  //if (responseObject.errorCode !== 0) {
+		console.log("onConnectionLost:"+responseObject.errorMessage);
+	  //}
+	}
+
+	// called when a message arrives
+	function onMessageArrived(message) {
+	  console.log("onMessageArrived:"+message.payloadString);
+	}
+	</script>
 </body>
 </html>

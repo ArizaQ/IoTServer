@@ -125,7 +125,7 @@ def connect():
             thread = socketio.start_background_task(background_thread)
     ws_session=session
     ws_emit=emit
-    emit('my_response', {'data': 'Connected', 'count': 0})
+    emit('my_response', {'data': 'Connected1111111111111111111111', 'count': 0})
 
 
 @socketio.on('disconnect')

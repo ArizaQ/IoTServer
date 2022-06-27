@@ -3,10 +3,9 @@ from application.apps.utils.OBSService import uploadFile
 from application.apps.picUpload import modelRun
 from application.apps.utils import constVal
 import tarfile
-import json
+# import json
 import pymysql
 import os
-import datetime
 
 
 def resolveUploadedPicture(zipFileName):

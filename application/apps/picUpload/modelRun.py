@@ -4,7 +4,6 @@ import tensorflow as tf
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
-
 def predict(img_path,model_path):
     test_pics = []
     imgs = []
@@ -17,5 +16,6 @@ def predict(img_path,model_path):
 
     model = tf.keras.models.load_model(model_path)
     predict_ans= model.predict(np.array(imgs))
+    print(predict_ans)
     print(np.argmax(model.predict(np.array(imgs)), axis=1))
     return np.argmax(model.predict(np.array(imgs)), axis=1)

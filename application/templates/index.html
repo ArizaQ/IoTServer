@@ -18,7 +18,7 @@
                 {#						<li><a href="">我的收藏</a></li>#}
                 <li class="search_form">
                     <form action="" class="search_bar" method="get">
-                        <input class="search" name="key" placeholder="搜索图片，作者，类型" type="text">
+                        <input class="search" name="key" placeholder="搜索照片，拍摄时间" type="text">
                         <div class="icon_submit"></div>
                     </form>
                 </li>
@@ -27,7 +27,7 @@
     </header>
     <div class="control" id="control">
         <div class="big_image">
-            <img id="main_pic" src="https://iot-data-zwq.obs.cn-north-4.myhuaweicloud.com/user-data/2022-06-25%2017%3A23%3A44.jpg" alt="照片"/>
+            <img id="main_pic" src="https://iot-data-zwq.obs.cn-north-4.myhuaweicloud.com/mask-data/mask/2022-06-26%2013%3A52%3A15temp.jpg" alt="照片"/>
         </div>
         <aside class="aside">
             <h2 id="mask_prompt" >Welcome</h2>
@@ -63,6 +63,8 @@
 </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
 <script type="text/javascript" src="../static/javascripts/jquery-1.11.0.min.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <script src="../static/javascripts/index.js"></script>
 </html>

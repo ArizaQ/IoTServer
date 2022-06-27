@@ -1,11 +1,5 @@
-from flask import Flask, render_template, request, jsonify
-from flask_mqtt import Mqtt
-from flask_sqlalchemy import SQLAlchemy
-from application.settings.dev import DevelopmentConfig
-from application.settings.prop import  ProductionConfig
 from application import app,socketio
-# from application import mqtt_client
-from application import topic
+
 
 
 # @app.route('/accounts', methods=['GET'])
