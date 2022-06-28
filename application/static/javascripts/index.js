@@ -29,7 +29,8 @@ window.onload = function () {
         type: "get",
         url: url,
         success: (data) => {
-            for (var i = 0; i < data.data.length; i++) {
+            console.log(data)
+            for (var i = data.data.length-1; i >=0; i--) {
                 addImage(data.data[i])
             }
         }
@@ -47,7 +48,7 @@ window.onload = function () {
         addToBigImage(msg.data)
     });
 
-    var socket2 = io("http://localhost:8080");
+    var socket2 = io("http://139.9.158.194:8080");
     console.log("prepared to connect to cloud.")
     socket2.on('connect', function () {
         socket.emit('my_event', {data: 'I\'m connected222!'});
@@ -60,10 +61,10 @@ window.onload = function () {
         console.log(msg)
     });
     socket2.on('my_response', function (msg, cb) {
-        consle.log("my_response")
+        console.log("my_response")
         console.log(msg)
     });
-    
+
 
 }
 
@@ -138,8 +139,8 @@ function addToBigImage(pic) {
 }
 
 function addImage(pic) {
-    console.log("addImage")
-    console.log(pic)
+    // console.log("addImage")
+    // console.log(pic)
     var item = document.createElement("div");
     item.setAttribute("class", "item");
 

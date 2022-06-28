@@ -52,6 +52,23 @@ def uploadFile(filePathPrefix,fileName,subject, tag):
         return resp.errorMessage
         obsClient.close()
 
+def uploadUserPicture(filePath,create_time):
+    resp=0
+    fileName="temp.jpg"
+    resp = obsClient.putFile(bucketName, "mask-data/mask/"+create_time+fileName, filePath)
+    if resp.status < 300:
+        # 输出请求Id
+        print('requestId:', resp.requestId)
+        obsClient.close()
+        return resp.body['objectUrl']
+    else:
+        # 输出错误码
+        print('errorCode:', resp.errorCode)
+        # 输出错误信息
+        print('errorMessage:', resp.errorMessage)
+        return resp.errorMessage
+        obsClient.close()
+
 def readDir(dirPrefix):
     try:
         resp = obsClient.listObjects(bucketName, prefix=dirPrefix, max_keys=100)

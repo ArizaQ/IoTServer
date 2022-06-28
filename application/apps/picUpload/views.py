@@ -1,10 +1,12 @@
+from shutil import copyfile
+
 from flask import request, jsonify, Blueprint
 from application import topic
 from application import mqtt_ws, socketio
 from application.apps.picUpload.model import transmitModel, insertUserInfo, getAllUserInfo, runMaskModel, getUserData, \
     takePhotoCommand
 from application.apps.utils import constVal
-from application.apps.utils.OBSService import uploadFile, downloadFile
+from application.apps.utils.OBSService import uploadFile, downloadFile,uploadUserPicture
 import datetime
 import requests
 import urllib
@@ -16,6 +18,7 @@ current_stay_local = False
 
 @mqtt_ws.on_message()
 def handle_mqtt_message(client, userdata, message):
+    global current_stay_local
     if message.topic == topic:  # picUpload, 图片拍摄完成
         filePathPrefix = "application/static/"
         tempFileName = "temp.jpg"
@@ -23,15 +26,24 @@ def handle_mqtt_message(client, userdata, message):
         with open(fullFileName, mode='wb') as file_obj:
             file_obj.write(message.payload)
         print("picture received")
+        create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        create_time_file_name=datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         # isComplain, isMasked, picUrl=resolveUploadedPicture(tempFileName)
         isMasked = runMaskModel(filePathPrefix + tempFileName)
-        pictureUrl = uploadFile(filePathPrefix, tempFileName, "mask-data", "mask")
-        create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        pictureUrl=""
+        if current_stay_local:
+            local_store_file_path="application/static/images/"+create_time_file_name+".jpg"
+            copyfile(fullFileName,local_store_file_path)
+            pictureUrl="../static/images/"+create_time_file_name+".jpg"
+        else:
+            pictureUrl = uploadUserPicture(fullFileName,create_time)
+
         user = insertUserInfo(pictureUrl, isMasked, create_time)
         global current_user
         current_user = user
         current_user["argue"] = -1
-        current_stay_local = False
+        # current_stay_local = False
 
         socketio.emit('picture_upload',
                       {'data': user,
@@ -46,6 +58,7 @@ def handle_mqtt_message(client, userdata, message):
 @picUploadBlueprint.route('/takePhoto', methods=['GET'])
 def takePhoto():
     global current_user
+    global current_stay_local
     if current_user is not None:
         sendUserInfoToCloud(current_user)
 
@@ -96,6 +109,7 @@ def model_transmit2():
     urllib.request.urlretrieve(model_url, constVal.modelPath)
     print(request.get_json())
     print("模型获取成功")
+    return "success"
 @picUploadBlueprint.route('/publishToPicUpload', methods=['POST'])
 def publish_message():
     # pass
