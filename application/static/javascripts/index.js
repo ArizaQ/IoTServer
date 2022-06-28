@@ -30,7 +30,7 @@ window.onload = function () {
         url: url,
         success: (data) => {
             console.log(data)
-            for (var i = data.data.length-1; i >=0; i--) {
+            for (var i = data.data.length - 1; i >= 0; i--) {
                 addImage(data.data[i])
             }
         }
@@ -47,23 +47,28 @@ window.onload = function () {
         console.log(msg.data)
         addToBigImage(msg.data)
     });
-
-    var socket2 = io("http://139.9.158.194:8080");
-    console.log("prepared to connect to cloud.")
-    socket2.on('connect', function () {
-        socket.emit('my_event', {data: 'I\'m connected222!'});
-        console.log("connected22222222222")
-    });
-    socket2.on('model_transmit', function (msg, cb) {
+    socket.on('stream_upload', function (msg, cb) {
         // $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
-        console.log("model_transmit")
-        socket.emit("model_transmit", msg)
-        console.log(msg)
+        console.log(msg.data)
+        addImage(msg.data)
     });
-    socket2.on('my_response', function (msg, cb) {
-        console.log("my_response")
-        console.log(msg)
-    });
+
+    // var socket2 = io("http://139.9.158.194:8080");
+    // console.log("prepared to connect to cloud.")
+    // socket2.on('connect', function () {
+    //     socket.emit('my_event', {data: 'I\'m connected222!'});
+    //     console.log("connected22222222222")
+    // });
+    // socket2.on('model_transmit', function (msg, cb) {
+    //     // $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
+    //     console.log("model_transmit")
+    //     socket.emit("model_transmit", msg)
+    //     console.log(msg)
+    // });
+    // socket2.on('my_response', function (msg, cb) {
+    //     console.log("my_response")
+    //     console.log(msg)
+    // });
 
 
 }
@@ -157,10 +162,50 @@ function addImage(pic) {
     var itemInfo = document.createElement("div")
     itemInfo.innerText = pic.timeNow
     item.appendChild(itemInfo)
+    var itemInfo2 = document.createElement("span")
+    itemInfo2.innerText = getMaskInfo(pic.ismasked)
+    item.appendChild(itemInfo2)
 
+    if (pic.pictureurl.startsWith("..")) {
+        var uploadButton = document.createElement("button")
+        uploadButton.innerHTML = "上传至云端"
+        uploadButton.id = "button" + images.length
+        uploadButton.style.cssText="display:inline;margin-left:2px;"
+        item.appendChild(uploadButton)
+        uploadButton.addEventListener("click", activeUpload)
+    }
 
     $("#images").prepend(item);
-    images.push(item);
+    images.push(pic);
 
 
+}
+
+function activeUpload(e) {
+    var src = e.srcElement
+    srcId = src.id.substr(6)
+    pic = images[srcId]
+    console.log(pic)
+    $.ajax({
+        type: "POST",
+        url: "/picUpload/activeUpload",
+        contentType: "application/json", //必须这样写
+        dataType: "json",
+        data: JSON.stringify(pic),
+        success: () => {
+            console.log(document.getElementById(src.id))
+            document.getElementById(src.id).remove()
+            console.log("sssssssssssss")
+        }
+    });
+}
+
+function getMaskInfo(maskNo) {
+    if (maskNo == 0) {
+        return "未佩戴口罩";
+    } else if (maskNo == 1) {
+        return "已佩戴口罩";
+    } else {
+        return "未正确佩戴口罩"
+    }
 }

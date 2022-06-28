@@ -43,6 +43,7 @@ topicTest='test'
 mqtt_ws = Mqtt(app)
 mqtt_ws.subscribe(topic)
 mqtt_ws.subscribe(topicTest)
+mqtt_ws.subscribe(constVal.topicStreamFace)
 
 from .apps.picUpload.views import picUploadBlueprint
 app.register_blueprint(picUploadBlueprint, url_prefix='/picUpload')

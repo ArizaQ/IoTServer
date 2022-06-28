@@ -6,11 +6,12 @@ from application import mqtt_ws, socketio
 from application.apps.picUpload.model import transmitModel, insertUserInfo, getAllUserInfo, runMaskModel, getUserData, \
     takePhotoCommand
 from application.apps.utils import constVal
-from application.apps.utils.OBSService import uploadFile, downloadFile,uploadUserPicture
+from application.apps.utils.OBSService import uploadFile, downloadFile, uploadUserPicture
 import datetime
 import requests
 import urllib
 import json
+
 picUploadBlueprint = Blueprint('picUpload', __name__, template_folder='../../templates', static_folder='../../static')
 current_user = None
 current_stay_local = False
@@ -27,17 +28,17 @@ def handle_mqtt_message(client, userdata, message):
             file_obj.write(message.payload)
         print("picture received")
         create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        create_time_file_name=datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        create_time_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         # isComplain, isMasked, picUrl=resolveUploadedPicture(tempFileName)
         isMasked = runMaskModel(filePathPrefix + tempFileName)
 
-        pictureUrl=""
+        pictureUrl = ""
         if current_stay_local:
-            local_store_file_path="application/static/images/"+create_time_file_name+".jpg"
-            copyfile(fullFileName,local_store_file_path)
-            pictureUrl="../static/images/"+create_time_file_name+".jpg"
+            local_store_file_path = "application/static/images/" + create_time_file_name + ".jpg"
+            copyfile(fullFileName, local_store_file_path)
+            pictureUrl = "../static/images/" + create_time_file_name + ".jpg"
         else:
-            pictureUrl = uploadUserPicture(fullFileName,create_time)
+            pictureUrl = uploadUserPicture(fullFileName, create_time)
 
         user = insertUserInfo(pictureUrl, isMasked, create_time)
         global current_user
@@ -48,6 +49,23 @@ def handle_mqtt_message(client, userdata, message):
         socketio.emit('picture_upload',
                       {'data': user,
                        'count': 3}, namespace='', broadcast=True)
+    elif message.topic==constVal.topicStreamFace:
+        filePathPrefix2 = "application/static/"
+        tempFileName2 = "temp2.jpg"
+        fullFileName2 = filePathPrefix2 + tempFileName2
+        with open(fullFileName2, mode='wb') as file_obj:
+            file_obj.write(message.payload)
+        print("picture received")
+        create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        create_time_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        isMasked = runMaskModel(fullFileName2)
+        local_store_file_path = "application/static/images/" + create_time_file_name + ".jpg"
+        copyfile(fullFileName2, local_store_file_path)
+        pictureUrl = "../static/images/" + create_time_file_name + ".jpg"
+        user = insertUserInfo(pictureUrl, isMasked, create_time)
+        socketio.emit('stream_upload',
+                      {'data': user,
+                       'count': 3}, namespace='', broadcast=True)
 
     else:
         data = dict(
@@ -55,6 +73,8 @@ def handle_mqtt_message(client, userdata, message):
             payload=message.payload.decode()
         )
         print('Received message on topic: {topic} with payload: {payload}'.format(**data))
+
+
 @picUploadBlueprint.route('/takePhoto', methods=['GET'])
 def takePhoto():
     global current_user
@@ -84,6 +104,23 @@ def sendUserInfoToCloud(user):
     print(result.content)
 
 
+@picUploadBlueprint.route('/activeUpload', methods=['POST'])
+def activeUpload():
+    user = request.get_json()
+    pictureUrl = user['pictureurl']
+    url_mode = "local";
+    if pictureUrl.startswith("https"):
+        return jsonify( {'data':"success",
+          'count': 1})
+    pictureUrl = pictureUrl.replace("..", "application")
+    create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    pictureUrl = uploadUserPicture(pictureUrl, create_time)
+    user['pictureurl']=pictureUrl
+    sendUserInfoToCloud(user)
+    return jsonify( {'data':"success",
+          'count': 1})
+
+
 @picUploadBlueprint.route('/feedback', methods=['POST'])
 def feedback():
     global current_user
@@ -94,6 +131,7 @@ def feedback():
         current_user["argue"] = feedbackContent
         return "success"
 
+
 # 模型下发
 @socketio.event
 def model_transmit(message):
@@ -103,13 +141,16 @@ def model_transmit(message):
     print(message)
     print("模型获取成功")
 
+
 @picUploadBlueprint.route('/modelTransmit', methods=['POST'])
 def model_transmit2():
-    model_url=request.get_json()
+    model_url = request.get_json()
     urllib.request.urlretrieve(model_url, constVal.modelPath)
     print(request.get_json())
     print("模型获取成功")
     return "success"
+
+
 @picUploadBlueprint.route('/publishToPicUpload', methods=['POST'])
 def publish_message():
     # pass
@@ -138,4 +179,3 @@ def uploadToObs():
     insertUserInfo("application/resources/p34.jpg", 0)
     getAllUserInfo()
     return "upload success"
-
